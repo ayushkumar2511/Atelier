@@ -26,7 +26,8 @@ const col=new Float32Array(W);for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++)col[x]
 const th=[1/3,2/3];let md=9;th.forEach(a=>th.forEach(b=>md=Math.min(md,Math.hypot(cx0-a,cy0-b))));
 const k=v=>Math.max(0,Math.min(10,v)),tri=(v,c,w)=>k(10*(1-Math.abs(v-c)/w)),r=v=>Math.round(k(v)*10)/10,pc=v=>Math.round(v*100)+'%';
 const wS=tot?wm/(wm+cl+1e-6):.5,cS=1-wS,tmp=3+.7*(tot?Math.min(wS,cS)/Math.max(wS,cS,1e-6)*10:3);
-const CI=Math.max(0,Math.min(1,.4*Math.min(1,sf*2.2)+.3*(1-Math.min(1,fr*1.5))+.2*(1-Math.min(1,Math.abs(mS-.3)/.3))+.1*(1-Math.min(1,mG/.1))));
+let hs=0,dk=0;for(let i=0;i<N;i++){if(S[i]>.6&&L[i]>.35)hs++;if(L[i]<.22)dk++}hs/=N;dk/=N;
+const CI=Math.max(0,Math.min(1,.25*Math.min(1,dk*2.5)+.25*(1-Math.min(1,hs*3))+.2*(1-Math.min(1,mG/.12))+.15*Math.min(1,sf*1.8)+.15*(1-Math.min(1,Math.abs(mS-.3)/.3))));
 const F={
 shape:[3+.7*tri(e,.07,.2),`Strong edges cover ${pc(e)} of the image; shapes are ${e>.2?'busy and fragmented':e<.04?'soft and diffuse':'reasonably defined'}.`],
 line:[tri(mG,.05,.07),`Average edge strength is ${mG.toFixed(3)}, so linework reads as ${mG>.07?'bold':mG>.035?'moderate':'delicate or blended'}.`],
@@ -50,5 +51,5 @@ rhythm:[ac*12,`Repetition in vertical detail scores ${ac.toFixed(2)} (1 = strong
 proportion:[10-md*25,`The main area of interest sits ${pc(md)} of the frame away from a rule-of-thirds point.`],
 movement:[coh*14,`Edge directions are ${coh>.4?'strongly aligned, leading the eye along a path':'varied, so movement is scattered'} (coherence ${coh.toFixed(2)}).`],
 unity:[top2*7+(1-sd*1.5)*3,`Colour concentration and tonal evenness combine to ${top2>.6&&sd<.25?'a unified whole':'a varied, less uniform whole'}.`]};
-const features={};Object.keys(F).forEach(id=>features[id]={score:r(5+(F[id][0]-5)*1.8+(CI-.5)*28),note:F[id][1]});
+const features={};Object.keys(F).forEach(id=>features[id]={score:r(5+(k(F[id][0])-5)*1.2+(CI-.5)*20),note:F[id][1]});
 ok({ci:CI,title:'Untitled painting',style:'Pixel-based estimate',medium:'Digital image',summary:'Scored from measurable colour, contrast and edge statistics in your browser. It is not an expert reading, so treat it as a first draft.',features})};im.src=src});
